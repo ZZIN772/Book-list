@@ -1,0 +1,68 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+    background: #EDEDE9;
+    color: #333;
+}
+
+.header {
+    text-align: center;
+    padding: 20px 0;
+    background: #C2C5AA;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 14px;
+    margin-top: -5px;
+}
+
+.year-selector {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    overflow-x: auto;
+}
+
+.year-selector button {
+    padding: 8px 14px;
+    border: none;
+    background: #A7A98E;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.year-selector button.active {
+    background: #656D4A;
+}
+
+.book-list {
+    list-style: none;
+    padding: 0 20px;
+}
+
+/* 책 항목 */
+.book-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #DAD7CD;
+}
+
+.book-item input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* 읽은 책 스타일 */
+.book-item.read span {
+    color: #6B705C;
+    background-color: #DDE5B6;
+    text-decoration: line-through;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: 0.2s ease;
+}
