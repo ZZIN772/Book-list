@@ -1,25 +1,38 @@
-function renderBooks(books) {
-    const bookList = document.getElementById('book-list');
-    bookList.innerHTML = '';
-    books.forEach((book, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${book.title} by ${book.author}`;
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Edit';
-        editBtn.onclick = () => editBook(book.id);
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = () => deleteBook(book.id);
-        li.appendChild(editBtn);
-        li.appendChild(deleteBtn);
-        bookList.appendChild(li);
-    });
+// Adding book numbering, edit/delete functions, and read count statistics
+
+let books = [];
+
+function addBook(title, author) {
+    const book = {
+        id: books.length + 1,
+        title: title,
+        author: author,
+        readCount: 0,
+    };
+    books.push(book);
 }
 
-function editBook(id) {
-    // Logic to edit the book by its id
+function editBook(id, newTitle, newAuthor) {
+    const book = books.find(b => b.id === id);
+    if (book) {
+        book.title = newTitle;
+        book.author = newAuthor;
+    }
 }
 
 function deleteBook(id) {
-    // Logic to delete the book by its id
+    books = books.filter(b => b.id !== id);
+}
+
+function logRead(id) {
+    const book = books.find(b => b.id === id);
+    if (book) {
+        book.readCount += 1;
+    }
+}
+
+function displayBooks() {
+    books.forEach(book => {
+        console.log(`ID: ${book.id}, Title: ${book.title}, Author: ${book.author}, Reads: ${book.readCount}`);
+    });
 }
