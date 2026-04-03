@@ -1,6 +1,7 @@
 let books = JSON.parse(localStorage.getItem("books")) || {};
 let currentYear = String(new Date().getFullYear());
 let editingIndex = null;
+let currentTab = "list";
 
 const yearSelector = document.getElementById("yearSelector");
 const bookList = document.getElementById("bookList");
@@ -9,7 +10,66 @@ const bookList = document.getElementById("bookList");
 renderYears();
 renderBooks();
 
-// 연도 버튼 생성
+// ── 탭 전환 ──
+function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById("tabList").classList.toggle("active", tab === "list");
+    document.getElementById("tabRead").classList.toggle("active", tab === "read");
+    document.getElementById("viewList").style.display = tab === "list" ? "block" : "none";
+    document.getElementById("viewRead").style.display = tab === "read" ? "block" : "none";
+    document.getElementById("yearSelector").style.display = tab === "list" ? "flex" : "none";
+    document.getElementById("addBtnHeader").style.display = tab === "list" ? "inline-block" : "none";
+    if (tab === "read") renderReadBooks();
+}
+
+// ── 읽은 책 전체 뷰 (연도별 그룹) ──
+function renderReadBooks() {
+    const readList = document.getElementById("readList");
+    const readSummary = document.getElementById("readSummary");
+    readList.innerHTML = "";
+
+    const years = Object.keys(books).sort();
+    let totalRead = 0;
+
+    years.forEach(year => {
+        const readBooks = books[year].filter(b => b.read);
+        totalRead += readBooks.length;
+        if (readBooks.length === 0) return;
+
+        // 연도 헤더
+        const yearHeader = document.createElement("li");
+        yearHeader.className = "read-year-header";
+        yearHeader.textContent = `${year}년 — ${readBooks.length}권`;
+        readList.appendChild(yearHeader);
+
+        // 책 목록
+        readBooks.forEach((book, i) => {
+            const li = document.createElement("li");
+            li.className = "book-item read";
+            li.innerHTML = `
+                <div class="book-info">
+                    <span class="book-number">${i + 1}.</span>
+                    <span class="book-title">${book.title} — ${book.author}</span>
+                </div>
+            `;
+            readList.appendChild(li);
+        });
+    });
+
+    // 요약 문구
+    readSummary.textContent = totalRead > 0
+        ? `총 ${totalRead}권을 읽었어요 🎉`
+        : "아직 읽은 책이 없어요.";
+
+    if (totalRead === 0) {
+        const empty = document.createElement("li");
+        empty.className = "empty-state";
+        empty.textContent = "체크한 책이 없습니다.";
+        readList.appendChild(empty);
+    }
+}
+
+// ── 연도 버튼 생성 ──
 function renderYears() {
     yearSelector.innerHTML = "";
     const years = Object.keys(books).sort();
@@ -29,7 +89,7 @@ function renderYears() {
     });
 }
 
-// 책 리스트 렌더링
+// ── 책 리스트 렌더링 ──
 function renderBooks() {
     bookList.innerHTML = "";
 
@@ -68,7 +128,7 @@ function renderBooks() {
     });
 }
 
-// 모달 열기 (추가)
+// ── 모달 열기 (추가) ──
 function openAddModal() {
     editingIndex = null;
     document.getElementById("newTitle").value = "";
@@ -80,7 +140,7 @@ function openAddModal() {
     document.getElementById("newTitle").focus();
 }
 
-// 모달 열기 (수정)
+// ── 모달 열기 (수정) ──
 function openEditModal(index) {
     editingIndex = index;
     const book = books[currentYear][index];
@@ -93,20 +153,20 @@ function openEditModal(index) {
     document.getElementById("newTitle").focus();
 }
 
-// 모달 닫기
+// ── 모달 닫기 ──
 function closeAddModal() {
     document.getElementById("addModal").classList.remove("open");
     editingIndex = null;
 }
 
-// 오버레이 클릭 시 닫기
+// ── 오버레이 클릭 시 닫기 ──
 function handleOverlayClick(e) {
     if (e.target === document.getElementById("addModal")) {
         closeAddModal();
     }
 }
 
-// 책 추가 또는 수정
+// ── 책 추가 또는 수정 ──
 function addBook() {
     const title = document.getElementById("newTitle").value.trim();
     const author = document.getElementById("newAuthor").value.trim();
@@ -118,11 +178,9 @@ function addBook() {
     }
 
     if (editingIndex !== null) {
-        // 수정 모드
         books[currentYear][editingIndex].title = title;
         books[currentYear][editingIndex].author = author;
     } else {
-        // 추가 모드
         if (!books[year]) books[year] = [];
         books[year].push({ title, author, read: false });
         currentYear = year;
@@ -134,13 +192,12 @@ function addBook() {
     renderBooks();
 }
 
-// 책 삭제
+// ── 책 삭제 ──
 function deleteBook(index) {
     if (confirm("이 책을 삭제하시겠습니까?")) {
         books[currentYear].splice(index, 1);
         if (books[currentYear].length === 0) {
             delete books[currentYear];
-            // 삭제 후 남은 연도로 이동
             const remaining = Object.keys(books).sort();
             currentYear = remaining.length > 0 ? remaining[remaining.length - 1] : String(new Date().getFullYear());
         }
@@ -150,7 +207,7 @@ function deleteBook(index) {
     }
 }
 
-// 저장
+// ── 저장 ──
 function save() {
     localStorage.setItem("books", JSON.stringify(books));
 }
