@@ -1,55 +1,46 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>책읽기 목록</title>
-
-    <!-- 스타일 -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- PWA: manifest 연결 -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- iOS PWA 지원 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white">
     <meta name="apple-mobile-web-app-title" content="책읽기 목록">
     <link rel="apple-touch-icon" href="icon-192.png">
 </head>
-
 <body>
-
     <header class="header">
-        <h1>책읽기 목록</h1>
-        <p class="subtitle">연도별 독서 리스트</p>
+        <div class="header-top">
+            <div>
+                <h1>책읽기 목록</h1>
+                <p class="subtitle">연도별 독서 리스트</p>
+            </div>
+            <button class="add-btn" onclick="openAddModal()">+ 책 추가</button>
+        </div>
+        <div class="year-selector" id="yearSelector"></div>
     </header>
 
-    <!-- 연도 선택 -->
-    <div class="year-selector" id="yearSelector"></div>
-
-    <!-- 책 리스트 -->
     <ul class="book-list" id="bookList"></ul>
 
-    <!-- 책 추가 버튼 -->
-    <button class="add-btn" onclick="openAddModal()">+ 책 추가</button>
-
-    <!-- 책 추가 모달 -->
-    <div class="modal" id="addModal">
+    <!-- 모달 -->
+    <div class="modal-overlay" id="addModal" onclick="handleOverlayClick(event)">
         <div class="modal-content">
-            <h3>책 추가</h3>
+            <h3 id="modalTitle">책 추가</h3>
             <input id="newTitle" type="text" placeholder="책 제목">
             <input id="newAuthor" type="text" placeholder="저자">
             <input id="newYear" type="number" placeholder="연도 (예: 2025)">
-            <button onclick="addBook()">추가</button>
-            <button class="cancel" onclick="closeAddModal()">취소</button>
+            <div class="modal-buttons">
+                <button class="cancel" onclick="closeAddModal()">취소</button>
+                <button id="modalConfirmBtn" onclick="addBook()">추가</button>
+            </div>
         </div>
     </div>
 
-    <!-- 앱 스크립트 -->
     <script src="app.js"></script>
-
-    <!-- PWA: service worker 등록 -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
@@ -57,6 +48,5 @@
                 .catch(err => console.log("SW 등록 실패:", err));
         }
     </script>
-
 </body>
 </html>
