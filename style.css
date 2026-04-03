@@ -276,3 +276,58 @@ body {
 .modal-buttons #modalConfirmBtn:hover {
     background: #414833;
 }
+
+/* ── 메인 탭 ── */
+.main-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+}
+
+.main-tab {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.main-tab.active {
+    color: #414833;
+    border-bottom: 3px solid #656D4A;
+}
+
+/* ── 읽은 책 뷰 ── */
+.read-summary {
+    text-align: center;
+    padding: 18px 20px 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #656D4A;
+}
+
+.read-year-header {
+    list-style: none;
+    padding: 10px 20px 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid #DAD7CD;
+    margin: 4px 16px 0;
+}
+
+/* 읽은 책 뷰에서는 취소선 없이 깔끔하게 */
+#readList .book-item.read {
+    opacity: 1;
+}
+
+#readList .book-item.read .book-title {
+    text-decoration: none;
+    color: #333;
+}
