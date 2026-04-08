@@ -4,7 +4,8 @@ const ASSETS = [
     "./index.html",
     "./style.css",
     "./app.js",
-    "./manifest.json"
+    "./manifest.json",
+    "./icon-192.png"
 ];
 
 // 설치: 필요한 파일 캐시
