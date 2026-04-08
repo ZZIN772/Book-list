@@ -211,3 +211,54 @@ function deleteBook(index) {
 function save() {
     localStorage.setItem("books", JSON.stringify(books));
 }
+
+// ── JSON 내보내기 ──
+function exportBooks() {
+    const data = JSON.stringify(books, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `책목록_백업_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ── JSON 가져오기 ──
+function importBooks() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const imported = JSON.parse(ev.target.result);
+                if (confirm("기존 데이터에 병합할까요?\n(취소 시 전체 덮어쓰기)")) {
+                    // 병합: 중복 제외하고 추가
+                    Object.keys(imported).forEach(year => {
+                        if (!books[year]) books[year] = [];
+                        imported[year].forEach(newBook => {
+                            const exists = books[year].some(
+                                b => b.title === newBook.title && b.author === newBook.author
+                            );
+                            if (!exists) books[year].push(newBook);
+                        });
+                    });
+                } else {
+                    books = imported;
+                }
+                save();
+                renderYears();
+                renderBooks();
+                alert("가져오기 완료! ✅");
+            } catch {
+                alert("올바른 JSON 파일이 아닙니다.");
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
